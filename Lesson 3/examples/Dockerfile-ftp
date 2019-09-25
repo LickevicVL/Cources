@@ -1,0 +1,21 @@
+FROM python:3.7-alpine
+
+ARG FTP_PORT
+ARG USER=admin
+ARG PASSWORD=admin
+
+ENV FTP_PORT ${FTP_PORT:-2121}
+ENV USER ${USER}
+ENV PASSWORD ${PASSWORD}
+
+RUN pip install -U pip
+RUN pip install pyftpdlib
+
+WORKDIR /data
+
+RUN apk add git && git clone https://github.com/LickevicVL/Cources
+
+EXPOSE ${FTP_PORT} 21 30000-30009
+RUN echo ${FTP_PORT}
+
+ENTRYPOINT python -m pyftpdlib -p ${FTP_PORT} -r 30000-30009 -u ${USER} -P ${PASSWORD} -w

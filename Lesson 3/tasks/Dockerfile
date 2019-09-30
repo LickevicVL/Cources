@@ -7,7 +7,6 @@ ENV APP_PORT ${APP_PORT:-5000}
 WORKDIR /project/app
 
 RUN pip install -U pip
-RUN pip install python-json-logger
 RUN pip install pipenv
 
 COPY app.py app.py

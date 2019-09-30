@@ -1,0 +1,32 @@
+version: '3'
+
+services:
+  apps:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        APP_PORT: 8000
+    container_name: app
+    ports:
+      - 8080:8000
+    networks:
+      - network
+    hostname: app
+
+  nginx:
+    build:
+      context: .
+      dockerfile: Dockerfile-nginx
+      args:
+        HOST: app
+        PORT: 8000
+    container_name: nginx1
+    ports:
+      - 80:80
+    networks:
+      - network
+
+networks:
+  network:
+    driver: bridge

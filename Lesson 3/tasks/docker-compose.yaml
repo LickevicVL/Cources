@@ -1,0 +1,34 @@
+version: '3'
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: app
+    networks:
+      - network
+    depends_on:
+      - nginx
+    hostname: app
+    environment:
+      APP_PORT: 8000
+      HOST: nginx      
+      
+  nginx:
+    build:
+      context: .
+      dockerfile: Dockerfile-nginx
+      args:
+        HOST: app
+        PORT: 8000
+    container_name: nginx
+    ports:
+      - 80:80
+    networks:
+      - network
+    hostname: nginx
+
+networks:
+  network:
+    driver: bridge

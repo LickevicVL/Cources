@@ -14,10 +14,9 @@ while True:
             for key in a:
                 for _id, info in key.items():
                     print(f"User was found: {info['name'].title()}, {info['surname'].title()}, age: {info['age']}, "
-                      f"sex: {info['sex']}")
+                          f"sex: {info['sex']}")
                 else:
                     continue
-                break
         else:
             print("Can't find. Try again")
 
@@ -30,13 +29,13 @@ while True:
 
         user_sex = input('Enter your sex ([m]ale, [f]emale): ').lower()
 
-        id = user_name + user_surname + str(user_age) + user_sex
+        _id = user_name + user_surname + str(user_age) + user_sex
 
-        base[id] = {}
-        base[id]['name'] = user_name
-        base[id]['surname'] = user_surname
-        base[id]['age'] = int(user_age)
-        base[id]['sex'] = user_sex
+        base[_id] = {}
+        base[_id]['name'] = user_name
+        base[_id]['surname'] = user_surname
+        base[_id]['age'] = int(user_age)
+        base[_id]['sex'] = user_sex
 
         print(f'User {user_name.title()} {user_surname.title()} of age {user_age} was added')
 

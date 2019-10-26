@@ -12,9 +12,9 @@ mess = json.dumps(rjson(), indent=2)
 
 if __name__ == '__main__':
 	server = smtplib.SMTP('smtp.gmail.com', 587)
-	server.ehlo()       
+	#server.ehlo()       
 	server.starttls()
-	server.ehlo()
+	#server.ehlo()
 	print(f'Logging in {addr_from} ...')
 	server.login(addr_from, password)
 	

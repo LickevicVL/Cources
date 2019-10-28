@@ -43,12 +43,12 @@ def words_freq(all_words):
 			
 
 if __name__ == '__main__' :
-	expression = re.compile(r"[a-zA-Z]{1,}")
+	expression = re.compile(r"[\w]+(?<!'\w)")
 	text = get_file('text.txt')
 	
 	all_words = count_words(text.lower(), expression)
 	#Удаляем s, тк оно часть притяжательного
-	all_words = list(filter(lambda el: el != 's', all_words))
+	#all_words = list(filter(lambda el: el != 's', all_words))
 	print(f'Total words: {len(all_words)}')
 	
 	unique_words = set(all_words)

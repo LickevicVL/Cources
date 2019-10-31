@@ -25,6 +25,9 @@ class Person:
         return f'{name}: {self.age} age'
 
     def __repr__(self):
+        name = 'Unknown'
+        if getattr(self, 'name', None):
+            name = self.name
         return f'{self.__class__.__name__}: {self.name}'
 
     def __getitem__(self, item):

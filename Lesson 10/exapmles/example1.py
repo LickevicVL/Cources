@@ -28,7 +28,7 @@ class Person:
         name = 'Unknown'
         if getattr(self, 'name', None):
             name = self.name
-        return f'{self.__class__.__name__}: {self.name}'
+        return f'{self.__class__.__name__}: {name}'
 
     def __getitem__(self, item):
         return self.get_age(item)

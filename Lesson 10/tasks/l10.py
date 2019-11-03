@@ -53,8 +53,3 @@ if __name__ == '__main__':
 	Shop.print_earnings(0)
 	Shop.print_earnings(1)
 	shop_3.print_earnings(shop_2)
-
-
-
-
-

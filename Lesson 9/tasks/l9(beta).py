@@ -1,25 +1,18 @@
-fir = [0, 0, 0, 0, 2, 2, 2, 2]
-se = [0, 0, 0, 0, 0, 0, 2, 2]
-th = [0, 0, 0, 0, 0, 0, 0, 0]
-lol = [0, 0, 0, 0, 0, 0, 0, 0]
-fo = [0, 0, 0, 0, 0, 0, 0, 0]
-fif = [0, 0, 0, 0, 0, 0, 2, 2]
-si = [0, 0, 0, 0, 2, 2, 2, 2]
-
 from dataclasses import dataclass
 import numpy as np
-from matplotlib import pyplot as plt
-from random import sample, choices #unique number sample(range(1, 100), 3)  ->77 56 23
 from math import sqrt
-import matplotlib.animation as animation
-from collections import Counter
 from time import time
+from matplotlib import pyplot as plt
+import matplotlib.animation as animation
+from random import sample, choices
 
-#task field
-#refactoring
+
 def create_field():
-	field = np.zeros((12, 10))
-	half_exit = 6
+	'''
+	Создаем поле
+	'''
+	field = np.zeros((21, 15))
+	half_exit = 7
 	shape = field.shape
 	
 	#верх сужения
@@ -41,23 +34,47 @@ def create_field():
 		
 	return field
 
+
+def create_ims(field):
+		ims = []    #для scatter's
+		counter = 0 #для вывода в консоль
+		for frame in field._frames:
+			im = []
+			blue_x, blue_y = [], []		
+			red_x, red_y = [], []	
+			shape = frame.shape
+			
+			for i in range(shape[0]):
+				for j in range(shape[1]):
+					if frame[i, j] == 2:
+						red_x.append(j)
+						red_y.append(-i) #минус чтобы не инвертирвоал верх и низ pyplot
+					elif frame[i, j] == 1:					
+						blue_x.append(j)
+						blue_y.append(-i)
+			
+			im.append(plt.scatter(blue_x, blue_y, c='blue', s=100, marker='s'))
+			im.append(plt.scatter(red_x, red_y, c='red', s=120, marker='s'))
+			counter += 1
+			print(f'frame {counter} ready')
+			ims.append(im)
+		
+		return ims	
+		
+
 @dataclass
 class Field:
-	#_field = np.asmatrix((fir, se, th, lol, fo, fif, si))
 	_field = create_field()
 	_shape = _field.shape
-	_dots = [] #можно убрать
 	_frames = [] 
-	_n = 6 #максимальное количество точек для первого ряда (если есть 5 точек, то создастся 1 новая)
+	_n = 19 #max кол-во точек в первом столбце
 	
-	def __str__(self):
-		'''Принт фрейма'''
-		return str(self._frames[-1])
 		
 	def save_frame(self):
 		'''Сохранение фрейма'''
 		copy = np.copy(self._field)
 		self._frames.append(copy)
+		
 		
 	def spawn_first_row(self):
 		'''Спавн перого ряда'''
@@ -75,13 +92,13 @@ class Field:
 		if self._shape[0] - b > self._shape[0] - n_in_row:
 			lines = sample(indxs, n_in_row - b)
 		
+		dots = []
 		for i in lines:
-			self._dots.append([i, 0])
+			dots.append([i, 0])
 			
-		for i in self._dots:
+		for i in dots:
 			self._field[i[0], i[1]] = 1
 			
-		self._dots = []
 		
 	def move_dots(self):
 		'''Двигаем точки начиная с конца'''
@@ -101,20 +118,21 @@ class Field:
 
 					if direction == 'N':
 						ndot = [dot[0], dot[1] + 1]
-					elif direction == 'S':
-						ndot = []
-					elif direction == 'E':
-						ndot = [dot[0] - 1, dot[1]]
-					elif direction == 'W':
-						ndot = [dot[0] + 1, dot[1]]
-					elif direction == 'stay':
-						ndot = [dot[0], dot[1]]
-						
-					if ndot:
 						self._field[ndot[0], ndot[1]] = 1
 						current_row.append(dot)
-					else:
-						self._field[dot[0], dot[1] - 1] = 3
+					elif direction == 'S':
+						ndot = []
+						self._field[dot[0], dot[1] - 1] = 1
+						current_row.append(dot)
+					elif direction == 'E':
+						ndot = [dot[0] - 1, dot[1]]
+						self._field[ndot[0], ndot[1]] = 3
+						current_row.append(dot)
+					elif direction == 'W':
+						ndot = [dot[0] + 1, dot[1]]
+						self._field[ndot[0], ndot[1]] = 3
+						current_row.append(dot)
+					elif direction == 'stay':
 						current_row.append(dot)
 						
 			for dot in current_row:
@@ -124,7 +142,7 @@ class Field:
 			for j in range(self._shape[1]):
 				if self._field[i, j] == 3:
 					self._field[i, j] = 1
-				
+					
 				
 	def _calc_sin(self, dot):
 		'''Вычисляем dsin'''
@@ -132,30 +150,30 @@ class Field:
 		sinus = 0
 		if dot[0] < centr:
 			a = centr - dot[0]
-			b = self._shape[1]-2 - dot[1] + 1
+			b = self._shape[1] + 2 - dot[1] + 1
 			c = sqrt(a**2 + b**2)
 			sinus =  a/c
-		elif dot[0] > centr: # >= centr 
+		elif dot[0] > centr: 
 			a = dot[0] - centr
-			b = self._shape[1]-1 - dot[1] + 1
+			b = self._shape[1] + 2 - dot[1] + 1
 			c = sqrt(a**2 + b**2)
 			sinus = -a/c
 		else:
 			sinus = 0
 		
-
 		W = (sinus**2 + 1 / 3) if sinus <= 0 else 3
 		E = (sinus**2 + 1 / 3) if sinus >= 0 else 3
 		N = 1 - sinus**2
 		S = (sinus**2 + 1 / 3)/6
 		
 		return [N, S, E, W]
+		
 	
 	def _view_dirs(self, dot):
 		'''Смотрим по направлениям'''
 		N, S, E, W = 0, 0, 0, 0
-		tN, tS, tE, tW = True, True, True, True
-		
+		tN, tS, tE, tW = True, True, True, True #для проверки необходимости 'смотреть'
+		kek = [1, 2, 3]
 		for i in range(1, 4):
 			if dot[0] + i < self._shape[0] and self._field[dot[0] + i, dot[1]] == 0 and tW:
 				W += 1
@@ -185,7 +203,9 @@ class Field:
 		
 		return [N, S, E, W]
 		
+		
 	def _black_box(self, dot):
+		#сделать рандом с помощью равномерной случ велич
 		dirs = self._calc_sin(dot)# N S E W	
 		free_dirs = self._view_dirs(dot)
 		profit = [dirs[i] * free_dirs[i] for i in range(4)]
@@ -203,34 +223,11 @@ class Field:
 			maxIndex = 0
 			directions = ['stay']
 			
-		
 		return directions[maxIndex]
 		
+
+
 		
-
-
-def create_ims(field):
-		ims = []
-		counter = 0
-		for frame in field._frames:
-			im = []
-			shape = frame.shape
-			
-			for i in range(shape[0]):
-				for j in range(shape[1]):
-					if frame[i, j] == 2:
-						im.append(plt.scatter(j, i, c='red', s=100))
-					elif frame[i, j] == 0:
-						im.append(plt.scatter(j, i, c='white', s=100))
-					elif frame[i, j] == 1:
-						im.append(plt.scatter(j, i, c='blue', s=100))
-			counter += 1
-			print(f'frame {counter} ready')
-			ims.append(im)
-		
-		return ims	
-
-
 
 if __name__ == '__main__':
 	start = time()
@@ -239,7 +236,7 @@ if __name__ == '__main__':
 	c = 0
 	while True:
 		c += 1
-		if c < 5:
+		if c <= 100:
 			field.spawn_first_row()
 		field.save_frame()
 		field.move_dots()
@@ -249,19 +246,14 @@ if __name__ == '__main__':
 	print('Preframe preparation completed.')
 	print(f'{len(field._frames)} frames will be created')
 	print('Frame preparation begins...')
-	fig = plt.figure(dpi=100)
+	
+	fig = plt.figure(figsize=(5, 6),dpi=150)
+	#fig = plt.figure()
 	
 	ims = create_ims(field)
-	
-	ani = animation.ArtistAnimation(fig, ims, interval=100, blit=False, repeat_delay=1)
-	try:
-		ani.save('animation.gif', writer='imagemagick')
-	except Exception:
-		pass
-	else:
-		print('Animation is ready.')
-	#plt.show()
-	plt.close(fig)
-	
 	print(f'Time spent: {time()-start}')
-
+	
+	ani = animation.ArtistAnimation(fig, ims, interval=70, blit=False, repeat_delay=2)
+		
+	plt.show()
+	plt.close(fig)

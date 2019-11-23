@@ -22,7 +22,7 @@ class Bank:
             Bank.money -= s
             print('Withdraw cash')
         else:
-            print('Don\'t enough money')
+            print('not enough money')
         self.lock.release()
 
 

@@ -26,28 +26,10 @@ class Forks():
 			print(f'{datetime.now()}:  {c + 1} get  left')
 			return True
 		
-	#не используется
-	def put_left_fork(self, c):
-		self.s.release()
-		print(f'{datetime.now()}:  {c + 1} put  left')
-		self.forks[c][0].release()
-		
 	
 	def get_right_fork(self, c):
-		try:
-			self.s.acquire()
-		except ValueError:
-			return False
-		else:
-			self.forks[c][1].acquire()
-			print(f'{datetime.now()}:  {c + 1} get  right')
-			return True
-		
-	#не используется
-	def put_right_fork(self, c):
-		self.s.release()
-		print(f'{datetime.now()}:  {c + 1} put  right')
-		self.forks[c][1].release()
+		self.forks[c][1].acquire()
+		print(f'{datetime.now()}:  {c + 1} get  right')
 		
 	
 	def put_forks(self, c):
@@ -72,24 +54,20 @@ class Phils(Thread):
 	
 	def run(self):
 		while True:
-			sleep(randint(0, 3))
+			sleep(randint(0, 3)) #Думает
 			a = __class__.forks.get_left_fork(self.c - 1)
 			if not a:
 				continue
 			
-			while True:
-				b = __class__.forks.get_right_fork(self.c - 1)
-				if not b:
-					#sleep(1)
-					continue
-					
-				print(f'{datetime.now()}:  {self.c}  eating...')
-				#sleep(randint(0, 3)) 
-				__class__.forks.put_forks(self.c - 1)
+			b = __class__.forks.get_right_fork(self.c - 1)
 				
-				print(f'{datetime.now()}:  {self.c}  Finished')
-				sleep(2)
-				break
+			print(f'{datetime.now()}:  {self.c}  eating...')
+			sleep(randint(0, 3)) #Ест
+			__class__.forks.put_forks(self.c - 1)
+			
+			print(f'{datetime.now()}:  {self.c}  Finished')
+			sleep(2) #Отдыхает
+				
 				
 
 

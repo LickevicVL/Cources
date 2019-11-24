@@ -69,8 +69,6 @@ class Phils(Thread):
 			sleep(2) #Отдыхает
 				
 				
-
-
 				
 if __name__ == '__main__':			
 	f1 = Phils('1')
@@ -90,10 +88,3 @@ if __name__ == '__main__':
 	f3.join()
 	f4.join()
 	f5.join()
-
-
-
-
-
-
-

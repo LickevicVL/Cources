@@ -23,22 +23,22 @@ class Forks():
 			return False
 		else:
 			self.forks[c][0].acquire()
-			print(f'{datetime.now()}:  {c + 1} get  left')
+			print(f'{datetime.now()}:  {c + 1} takes  left')
 			return True
 		
 	
 	def get_right_fork(self, c):
 		self.forks[c][1].acquire()
-		print(f'{datetime.now()}:  {c + 1} get  right')
+		print(f'{datetime.now()}:  {c + 1} takes  right')
 		
 	
 	def put_forks(self, c):
 		self.s.release()
-		print(f'{datetime.now()}:  {c + 1} put  left')
+		print(f'{datetime.now()}:  {c + 1} puts  left')
 		self.forks[c][0].release()
 		
 		self.s.release()
-		print(f'{datetime.now()}:  {c + 1} put  right')
+		print(f'{datetime.now()}:  {c + 1} puts  right')
 		self.forks[c][1].release()
 		
 

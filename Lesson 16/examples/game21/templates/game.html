@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Game</title>
+</head>
+<body>
+    <div id="result">
+        <h2>{{ user.name }}, your cards are:</h2>
+        {% for card in user.cards %}
+            <li>
+                {{ card.name }}
+            </li>
+        {% endfor %}
+        <h2> Your score: {{ user.count() }}</h2>
+    </div>
+    <h2>Add card?</h2>
+    <button onclick="getCard()">Yes</button>
+    <button onclick="location.href='{{ url_for('get_result', id=id) }}'">No</button>
+</body>
+<script>
+    function getCard() {
+        let request = new XMLHttpRequest();
+        request.open('GET', '{{ url_for('get_card', id=id) }}');
+        request.send();
+        request.onload = function () {
+            console.log(request.status);
+            if (request.status === 200) {
+                document.getElementById('result').innerHTML = request.responseText
+            }
+
+            if (request.status === 302) {
+                location.href = '{{ url_for('get_result', id=id) }}'
+            }
+        }
+    }
+</script>
+</html>

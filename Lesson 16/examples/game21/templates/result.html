@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Result</title>
+</head>
+<body>
+<h1>Winner is {{ winner }}</h1>
+<h2>{{ user.name }}, your cards are:</h2>
+    {% for card in user.cards %}
+        <li>
+            {{ card.name }}
+        </li>
+    {% endfor %}
+<h2> Your score: {{ user.count() }}</h2>
+<h2>Bot's cards are:</h2>
+    {% for card in bot.cards %}
+        <li>
+            {{ card.name }}
+        </li>
+    {% endfor %}
+<h2> Bot's score: {{ bot.count() }}</h2>
+
+<form action="{{ url_for('index') }}" method="post">
+    <input type="text" name="name" value="{{ user.name }}" hidden>
+    <input type="submit" value="Retry">
+</form>
+
+</body>
+</html>

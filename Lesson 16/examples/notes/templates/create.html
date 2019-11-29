@@ -1,0 +1,18 @@
+{% extends 'index.html' %}
+
+{% block body %}
+    <h1>
+        Create new sheet
+    </h1>
+    <form method="post" action="{{ url_for('create') }}">
+        <div class="form-group">
+            <label for="sheetTitle">Shit title</label>
+            <input type="text" class="form-control" placeholder="Title" name="title" id="sheetTitle" required>
+        </div>
+        <div class="form-group">
+            <label for="notes">Another label</label>
+            <textarea class="form-control" id="notes" placeholder="Notes" name="notes" required></textarea>
+        </div>
+        <button class="btn btn-primary" type="submit">Create</button>
+    </form>
+{% endblock %}
